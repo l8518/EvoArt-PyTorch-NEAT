@@ -57,17 +57,9 @@ def run():
                   rgb_in=torch.tensor(b_px_list, dtype=torch.float32))
     rgb_tensor = torch.stack([r_tensor, g_tensor, b_tensor], 0)
 
-    # Create Random Noise
-    print("Build PyTorch Random Tensor")
-    imarray = torch.rand(3, x_dim, y_dim)
-
     print("Interpret CPPN-based PyTorch Tensor as Image")
     results = torchvision.transforms.ToPILImage()(rgb_tensor)
     results.save('results_image.png')
-
-    print("Interpret random PyTorch Tensor as Image")
-    results_rand = torchvision.transforms.ToPILImage()(imarray)
-    results_rand.save('results_rand_image.png')
 
 
 if __name__ == "__main__":
