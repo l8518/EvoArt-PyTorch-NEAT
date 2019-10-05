@@ -14,9 +14,13 @@
 
 from functools import reduce
 from operator import mul
+import torch
 
 
 def sum_aggregation(inputs):
+    # fix summation error
+    # TODO: explain hotfix -> sometimes 0. tensor causes error, as not dtype=float
+    inputs = [i.float() for i in inputs]
     return sum(inputs)
 
 
