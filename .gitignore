@@ -1,3 +1,7 @@
+# App specific ignores
+
+img_output/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -59,7 +59,7 @@ def run():
 
     print("Interpret CPPN-based PyTorch Tensor as Image")
     results = torchvision.transforms.ToPILImage()(rgb_tensor)
-    results.save('results_image.png')
+    results.save(os.path.join("img_output", "results_image.png"))
 
 
 if __name__ == "__main__":
