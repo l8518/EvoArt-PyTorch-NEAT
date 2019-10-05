@@ -39,38 +39,30 @@ def run():
         ["output_node"]
     )
 
-    x_dim = 100
-    y_dim = 100
-    print ("Define Lambdas")
-    fr = lambda x, y: o1(
-        x_in=torch.tensor(x, dtype=torch.float32),
-        y_in=torch.tensor(y, dtype=torch.float32),
-        rgb_in=torch.tensor(1, dtype=torch.float32))
-
-    fg = lambda x, y: o1(
-        x_in=torch.tensor(x, dtype=torch.float32),
-        y_in=torch.tensor(y, dtype=torch.float32),
-        rgb_in=torch.tensor(2, dtype=torch.float32))
-
-    fb = lambda x, y: o1(
-        x_in=torch.tensor(x, dtype=torch.float32),
-        y_in=torch.tensor(y, dtype=torch.float32),
-        rgb_in=torch.tensor(3, dtype=torch.float32))
+    x_dim = 258
+    y_dim = 258
 
     print("Query CPPN")
-    rval = np.fromfunction(np.vectorize(fr), (x_dim, y_dim), dtype=float)
-    gval = np.fromfunction(np.vectorize(fg), (x_dim, y_dim), dtype=float)
-    bval = np.fromfunction(np.vectorize(fb), (x_dim, y_dim), dtype=float)
+    y_px_list = [[i for i in range(y_dim)] for j in range(y_dim)]
+    x_px_list = [[i for j in range(x_dim)] for i in range(x_dim)]
+    r_px_list = [[1 for j in range(x_dim)] for i in range(x_dim)]
+    g_px_list = [[2 for j in range(x_dim)] for i in range(x_dim)]
+    b_px_list = [[3 for j in range(x_dim)] for i in range(x_dim)]
 
-    print("Build PyTorch Tensor")
-    matrix = torch.tensor([rval, gval, bval], dtype=torch.float32)
+    r_tensor = o1(x_in=torch.tensor(x_px_list, dtype=torch.float32), y_in=torch.tensor(y_px_list, dtype=torch.float32),
+                  rgb_in=torch.tensor(r_px_list, dtype=torch.float32))
+    g_tensor = o1(x_in=torch.tensor(x_px_list, dtype=torch.float32), y_in=torch.tensor(y_px_list, dtype=torch.float32),
+                  rgb_in=torch.tensor(g_px_list, dtype=torch.float32))
+    b_tensor = o1(x_in=torch.tensor(x_px_list, dtype=torch.float32), y_in=torch.tensor(y_px_list, dtype=torch.float32),
+                  rgb_in=torch.tensor(b_px_list, dtype=torch.float32))
+    rgb_tensor = torch.stack([r_tensor, g_tensor, b_tensor], 0)
 
     # Create Random Noise
     print("Build PyTorch Random Tensor")
     imarray = torch.rand(3, x_dim, y_dim)
 
     print("Interpret CPPN-based PyTorch Tensor as Image")
-    results = torchvision.transforms.ToPILImage()(matrix)
+    results = torchvision.transforms.ToPILImage()(rgb_tensor)
     results.save('results_image.png')
 
     print("Interpret random PyTorch Tensor as Image")
