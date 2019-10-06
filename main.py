@@ -1,4 +1,5 @@
 import os
+import random
 import neat
 import numpy as np
 import torch
@@ -25,7 +26,7 @@ def run():
     # Determine fitness for each genome.
     def eval_genomes(genomes, config):
         for _, genome in genomes:
-            genome.fitness = 1
+            genome.fitness = random.randint(1, 200)
 
     # returns winning genome
     generations_n = 1
