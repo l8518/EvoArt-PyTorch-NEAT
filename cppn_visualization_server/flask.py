@@ -1,7 +1,6 @@
-import numpy as np
 from flask import Flask, render_template, Response
-from .cppn_renderer import CppnRenderer
-from .audio_preprocessor import AudioPreprocessor
+from lib.cppn_renderer import CppnRenderer
+from lib.audio_preprocessor import AudioPreprocessor
 import os
 import time
 import neat
@@ -9,8 +8,7 @@ import random
 import pytorch_neat.cppn
 
 # Init the flask server
-template_dir = os.path.abspath('./templates')
-app = Flask(__name__, template_folder=template_dir)
+app = Flask(__name__)
 cppn = None
 
 # Load Python-NEAT config
@@ -37,7 +35,7 @@ def get_cppn():
             genome.fitness = random.randint(1, 200)
 
     # returns winning genome
-    generations_n = 5
+    generations_n = 1
     initial_pop = pop.population.values()
     genome = pop.run(eval_genomes, generations_n)
     return create_cppn(genome, config)
@@ -66,7 +64,7 @@ def index():
 
 def gen(camera):
     while True:
-        time.sleep(0.005)
+        time.sleep(0.1)
         frame = camera.get_frame(cppn, 250, 250, audio_preprocessor.current_intensity_band)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
