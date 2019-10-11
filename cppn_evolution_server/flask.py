@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from lib.audio_preprocessor import AudioPreprocessor
+from shared.audio_preprocessor import AudioPreprocessor
 import os
 import time
 import neat
