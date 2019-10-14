@@ -69,6 +69,9 @@ def gen(camera):
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
+@app.route('/population')
+def population():
+    return "hello_server"
 
 @app.route('/video_feed')
 def video_feed():

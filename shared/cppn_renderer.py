@@ -7,8 +7,6 @@ import random
 
 class CppnRenderer(object):
     def __init__(self):
-        self.frames = [open(os.path.join("img_output", "initial_{0}_results_image.png".format(f)), 'rb').read() for f in
-                       range(20)]
         self.t = 0.0
 
     def get_frame(self, cppn, x_dim=250, y_dim=250, current_itensity_band= []):
