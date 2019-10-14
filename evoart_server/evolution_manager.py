@@ -57,14 +57,18 @@ class EvolutionManager(object):
 
     def evolve(self, best_individual):
         #     Determine fitness for each genome.
+        print(best_individual)
         def eval_genomes(genomes, config):
+            y = 0
             for i, genome in genomes:
-                if i == best_individual:
-                    return 10
+                y += 1
+                if int(y) == int(best_individual):
+                    genome.fitness = 10
                 else:
-                    return 0
+                    genome.fitness = 0
 
         # returns winning genome
         self.generations_n += 1
         genome = self.population.run(eval_genomes, self.generations_n)
+        # print(genome)
         self.best_individual = genome

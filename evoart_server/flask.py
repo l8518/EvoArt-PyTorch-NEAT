@@ -11,7 +11,8 @@ from evoart_server import EvolutionManager
 app = Flask(__name__)
 evolution_manager = EvolutionManager()
 audio_preprocessor = AudioPreprocessor(evolution_manager.get_cppn_freq_bands_inputs())
-
+best_individual = evolution_manager.get_best_individual()
+cppn = evolution_manager.transform_cppn(best_individual)
 
 @app.route('/')
 def index():
@@ -19,10 +20,8 @@ def index():
 
 
 def gen(camera):
-    best_individual = evolution_manager.get_best_individual()
-    cppn = evolution_manager.transform_cppn(best_individual)
     while True:
-        time.sleep(0.1)
+        time.sleep(0.04)
         frame = camera.get_frame(cppn, 250, 250, audio_preprocessor.current_intensity_band)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -61,6 +60,16 @@ def render_individual(popnum):
 @app.route('/select_individual/<popnum>', methods=['POST'])
 def select_population(popnum):
     evolution_manager.evolve(popnum)
+    global best_individual
+    best_individual = evolution_manager.get_best_individual()
+    global cppn
+    cppn = evolution_manager.transform_cppn(best_individual)
+    response = app.response_class(
+        response=json.dumps({}),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route('/video_feed')

@@ -16,4 +16,8 @@ export default class Api {
     return this._http.get(`popsize`)
   }
 
+  selectPop (popnum) {
+    return this._http.post(`select_individual/${popnum}`) // TODO: Refactor this, not really good
+  }
+
 }
