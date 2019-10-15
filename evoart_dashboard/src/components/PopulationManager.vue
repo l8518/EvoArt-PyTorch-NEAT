@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div class="row">
-        <Individual class="border border-secondary col-4" v-on:selected="onSelected" :pop-id="popId" v-for="popId in currentPopulation" :key="popId" />
+        <Individual class="border border-secondary col-3" v-on:selected="onSelected" :pop-id="popId" v-for="popId in currentPopulation" :key="popId" />
       </div>
     </div>
   </div>
