@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img :src="`/render_individual/${popId}`" />
+    <img class="w-100" :src="`/render_individual/${popId}`" />
     <button class="btn btn-primary" v-on:click="onClick">I win</button>
   </div>
 </template>
@@ -24,7 +24,7 @@ export default {
   methods: {
     onClick () {
       this.api.selectPop(this.popId).then(() => {
-        window.location.reload()
+          this.$emit('selected', {popId: this.popId})
       })
       return this.popId
     }

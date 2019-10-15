@@ -12,6 +12,7 @@ class EvolutionManager(object):
         self.init_pop()
         self.generations_n = 0
         self.best_individual = None
+        self.best_fitness = 0
 
     def load_config(self):
         # Load Python-NEAT config
@@ -34,11 +35,11 @@ class EvolutionManager(object):
         self.population = neat.Population(self.config)
 
     def get_individual(self, id):
-        return list(self.population.population.values())[id]
+        return self.population.population[int(id)]
 
     def get_best_individual(self):
         if (self.best_individual is None):
-            return self.get_individual(0)
+            return self.get_individual(1)
         else:
             return self.best_individual
 
@@ -52,23 +53,21 @@ class EvolutionManager(object):
         )
         return o1
 
-    def max_population(self):
-        return self.config.pop_size
+    def current_population_ids(self):
+        return list(self.population.population.keys())
 
     def evolve(self, best_individual):
         #     Determine fitness for each genome.
-        print(best_individual)
         def eval_genomes(genomes, config):
-            y = 0
             for i, genome in genomes:
-                y += 1
-                if int(y) == int(best_individual):
-                    genome.fitness = 10
+                if i == int(best_individual):
+                    self.best_fitness += 1
+                    genome.fitness = self.best_fitness
                 else:
                     genome.fitness = 0
 
         # returns winning genome
         self.generations_n += 1
         genome = self.population.run(eval_genomes, self.generations_n)
-        # print(genome)
+
         self.best_individual = genome

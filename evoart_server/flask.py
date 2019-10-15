@@ -32,10 +32,10 @@ def get_population(popnum):
     return popnum
 
 
-@app.route('/popsize', methods=['GET'])
-def get_population_size():
+@app.route('/current_population', methods=['GET'])
+def get_current_population():
     val = {
-        "pop_size": evolution_manager.max_population()
+        "population": evolution_manager.current_population_ids()
     }
     response = app.response_class(
         response=json.dumps(val),
@@ -47,7 +47,7 @@ def get_population_size():
 @app.route('/render_individual/<popnum>', methods=['GET'])
 def render_individual(popnum):
     cppnRender = CppnRenderer()
-    indi = evolution_manager.get_individual(int(popnum) - 1)
+    indi = evolution_manager.get_individual(popnum)
     cppn = evolution_manager.transform_cppn(indi)
     frame = cppnRender.get_frame(cppn, 250, 250, audio_preprocessor.current_intensity_band)
     return send_file(

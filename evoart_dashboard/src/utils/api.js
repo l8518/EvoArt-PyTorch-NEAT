@@ -12,8 +12,8 @@ export default class Api {
     })
   }
 
-  getPopulationSize () {
-    return this._http.get(`popsize`)
+  getCurrentPopulation () {
+    return this._http.get(`current_population`)
   }
 
   selectPop (popnum) {

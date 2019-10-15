@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div class="row">
-        <Individual class="border border-secondary col-4" :pop-id="i" v-for="i in popSize" :key="i" />
+        <Individual class="border border-secondary col-4" v-on:selected="onSelected" :pop-id="popId" v-for="popId in currentPopulation" :key="popId" />
       </div>
     </div>
   </div>
@@ -21,16 +21,25 @@ export default {
     return {
       api: new Api('/'),
       loaded: false,
-      popSize: 0
+      currentPopulation: []
     }
   },
   created: function () {
-    let qry = this.api.getPopulationSize()
+    let qry = this.api.getCurrentPopulation()
 
     Promise.all([qry]).then((resArry) => {
-      this.popSize = resArry[0].data.pop_size
+      this.currentPopulation = resArry[0].data.population
       this.loaded = true
     })
+  },
+  methods: {
+    onSelected () {
+      let qry = this.api.getCurrentPopulation()
+      this.currentPopulation = []
+      Promise.all([qry]).then((resArry) => {
+        this.currentPopulation = resArry[0].data.population
+      })
+    }
   }
 }
 </script>
