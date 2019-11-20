@@ -13,5 +13,7 @@ Requires a loopback device otherwise it will use other default input device (pro
   - `https://www.vb-audio.com/Cable/` install and reroute your output
 - Linux:
   - Have not checked
+  - `sudo apt-get install libportaudio2`
+  - pavucontrol with the PulseAudio server
 - MacOs
   - Have not checked
