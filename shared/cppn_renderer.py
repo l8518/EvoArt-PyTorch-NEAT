@@ -5,11 +5,14 @@ import torchvision
 import io
 import random
 
+from PIL import Image
+
+
 class CppnRenderer(object):
     def __init__(self):
         self.t = 0.0
 
-    def get_frame(self, cppn, x_dim=250, y_dim=250, current_itensity_band= []):
+    def get_frame(self, cppn, x_dim=250, y_dim=250, current_itensity_band= [], output_dim_factor=1.0):
         """
         Renders an image from a cppn output node and returns PIL image.
         :param cppn_output_node: cppn's output node
@@ -26,14 +29,19 @@ class CppnRenderer(object):
         g_px_list = [[2 for j in range(x_dim)] for i in range(x_dim)]
         b_px_list = [[3 for j in range(x_dim)] for i in range(x_dim)]
 
-        f0_px_list = [[current_itensity_band[0] * tune for j in range(x_dim)] for i in range(x_dim)]
-        f1_px_list = [[current_itensity_band[1] * tune for j in range(x_dim)] for i in range(x_dim)]
+
+        #f0_px_list = [[current_itensity_band[0] * tune for j in range(x_dim)] for i in range(x_dim)]
+        #f1_px_list = [[current_itensity_band[1] * tune for j in range(x_dim)] for i in range(x_dim)]
 
         f_dict = {"x_in": torch.tensor(x_px_list, dtype=torch.float32),
                   "y_in": torch.tensor(y_px_list, dtype=torch.float32),
-                  "f_0": torch.tensor(f0_px_list, dtype=torch.float32),
-                  "f_1": torch.tensor(f1_px_list, dtype=torch.float32),
+                  # "f_0": torch.tensor(f0_px_list, dtype=torch.float32),
+                  # "f_1": torch.tensor(f1_px_list, dtype=torch.float32),
                   "rgb_in": torch.tensor(r_px_list, dtype=torch.float32)}
+
+        for index, band in enumerate(current_itensity_band):
+            f_dict["f_{0}".format(index)] = torch.tensor([[band * tune for j in range(x_dim)] for i in range(x_dim)], dtype=torch.float32)
+
 
         r_tensor = cppn(**f_dict)
         f_dict["rgb_in"] = torch.tensor(g_px_list, dtype=torch.float32)
@@ -44,7 +52,13 @@ class CppnRenderer(object):
         rgb_tensor = torch.stack([r_tensor, g_tensor, b_tensor], 0)
 
         pil_img = torchvision.transforms.ToPILImage()(rgb_tensor)
+        new_width = int(x_dim * output_dim_factor)
+        new_height = int(new_width * x_dim / y_dim)
         imgByteArr = io.BytesIO()
+        try:
+            pil_img = pil_img.resize((new_width, new_height), Image.ANTIALIAS)
+        except Exception as e:
+            print("failed" + str(e))
         pil_img.save(imgByteArr, format='PNG')
         imgByteArr = imgByteArr.getvalue()
         return imgByteArr

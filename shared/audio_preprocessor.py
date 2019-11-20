@@ -12,7 +12,7 @@ class AudioPreprocessor(object):
         self.block_size = int(self.samplerate * self.block_duration / 1000)
         self.low, self.high = [100, 2000]
         self.freqbands_n = freq_bands
-        self.delta_f = (self.high - self.low) / (self.freqbands_n - 1)
+        self.delta_f = (self.high - self.low) / max((self.freqbands_n - 1), 1)
         self.fftsize = math.ceil(self.samplerate / self.delta_f)
         self.low_bin = math.floor(self.low / self.delta_f)
         self.current_intensity_band = [0 for i in range(self.freqbands_n)]
